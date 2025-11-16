@@ -1,1 +1,19 @@
 {% extends "base.html.twig" %}
+{% block body %}
+	{# It is always better to dynamically use the path() function than doing it manually, it passes the route name not the file name #}
+	<form
+		action="action=" {{ path('app_login') }} ")" method="POST">
+		{# The hidden inputs for the CSRF token #}
+		<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        {# How can I use the last username functionality from the controller here? for later #}
+		<label for="login_username">Your username:</label>
+		<input type="text" name:"_username" id:"login_username">
+		<label for="login_password">Your password:</label>
+		<input type="password" name:"_password" id:"login_password">
+        <button type:"submit">Login</button>
+
+		{% if error %}
+			<div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+		{% endif %}
+	</form>
+{% endblock %}
