@@ -22,7 +22,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-     #[ORM\Column(length: 255)]
+     #[ORM\Column(length: 255, nullable: false)]
     private ?string $username = null;
 
     // I manually made email, password, and roles not nullable in the databasewise to ensure there are not empty
@@ -44,9 +44,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'reviewer', orphanRemoval: true)]
     private Collection $reviews;
 
+     /**
+      * @var Collection<int, Album>
+      */
+     #[ORM\OneToMany(targetEntity: Album::class, mappedBy: 'creator')]
+     private Collection $createdAlbums;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
+        $this->createdAlbums = new ArrayCollection();
     }
 
 
@@ -162,5 +169,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    /**
+     * @return Collection<int, Album>
+     */
+    public function getCreatedAlbums(): Collection
+    {
+        return $this->createdAlbums;
+    }
+
+    public function addCreatedAlbum(Album $createdAlbum): static
+    {
+        if (!$this->createdAlbums->contains($createdAlbum)) {
+            $this->createdAlbums->add($createdAlbum);
+            $createdAlbum->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreatedAlbum(Album $createdAlbum): static
+    {
+        if ($this->createdAlbums->removeElement($createdAlbum)) {
+            // set the owning side to null (unless already changed)
+            if ($createdAlbum->getCreator() === $this) {
+                $createdAlbum->setCreator(null);
+            }
+        }
+
+        return $this;
     }
 }

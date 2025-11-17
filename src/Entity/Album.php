@@ -16,11 +16,11 @@ class Album
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: false)]
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'albums')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Artist $artist = null;
 
     /**
@@ -37,6 +37,10 @@ class Album
      */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'album', orphanRemoval: true)]
     private Collection $reviews;
+
+    #[ORM\ManyToOne(inversedBy: 'createdAlbums')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $creator = null;
 
     public function __construct()
     {
@@ -135,6 +139,18 @@ class Album
                 $review->setAlbum(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): static
+    {
+        $this->creator = $creator;
 
         return $this;
     }

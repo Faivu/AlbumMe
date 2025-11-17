@@ -19,6 +19,15 @@
 		{% block tob_bar %}
 			{% include 'partials/_topbar.html.twig' %}
 		{% endblock %}
+		{# To print flash messages #}
+		{% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-{{ label }}" style="padding: 1rem; background-color: #fff3cd; color: #664d03; border: 1px solid #ffe69c; border-radius: .25rem; margin-bottom: 1rem;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
 		{% block body %}{% endblock %}
 	</body>
 </html>
