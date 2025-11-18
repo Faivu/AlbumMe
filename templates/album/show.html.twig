@@ -1,0 +1,23 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Album: {{ album.title }}{% endblock %}
+
+{% block body %}
+    <h1>{{ album.title }}</h1>
+    <p>Artist: {{ album.artist.name }}</p>
+
+    <h2>Track List</h2>
+    <ul>
+        {# 1. Loop over trackList #}
+        {% for track in album.trackList %}
+            <li>{{ track }}</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Reviews</h2>
+    {% if album.reviews is empty %}
+        <p>There are no reviews it seems...</p>
+    {% endif %}
+    {# The reviews display logic will be added later after "dealing" with the review form #}
+    
+{% endblock %}

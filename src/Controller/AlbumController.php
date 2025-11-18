@@ -40,7 +40,8 @@ class AlbumController extends AbstractController
             $entityManager->flush();
 
             return $this->redirectToRoute('show_album', [
-                'id' => $album->getId(),
+                'id' => $album->getId()
+                // That is to put the id in the url
             ]);
         }
             return $this->render('/album/new.html.twig', [
