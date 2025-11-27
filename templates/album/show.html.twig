@@ -1,24 +1,49 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Album: {{ album.title }}{% endblock %}
+{% block title %}Album:
+	{{ album.title }}
+{% endblock %}
 
 {% block body %}
-    <h1>{{ album.title }}</h1>
-    <p>Artist: {{ album.artist.name }}</p>
+	<div class="row justify-content-center">
+		<div class="col-md-6 col-lg-4">
+			<h1>{{ album.title }}</h1>
+			<p>Artist:
+				{{ album.artist.name }}</p>
 
-    <h2>Track List</h2>
-    <ul>
-        {# 1. Loop over trackList #}
-        {% for track in album.trackList %}
-            <li>{{ track }}</li>
-        {% endfor %}
-    </ul>
+			<h2>Track List</h2>
+			<ul>
+				{# 1. Loop over trackList #}
+				{% for track in album.trackList %}
+					<li>{{ track }}</li>
+				{% endfor %}
+			</ul>
 
-    <h2>Reviews</h2>
-    {# add review button #}
-    {% if album.reviews is empty %}
-        <p>There are no reviews it seems...</p>
-    {% endif %}
-    {# The reviews display logic will be added later after "dealing" with the review form #}
-    
+			<h2>Reviews</h2>
+			{# add review button #}
+			<a href="{{ path('new_review', {'id': album.id}) }}" class="btn btn-info text-white me-3">Add review</a>
+
+			{% if album.reviews is empty %}
+				<p>There are no reviews it seems...</p>
+			{% else %}
+				<div class="list-group">
+					{% for review in album.reviews %}
+						<div class="list-group-item">
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">Rating:
+									{{ review.rating }}
+									/ 5</h5>
+								<small>
+									{{ review.reviewer ? review.reviewer.username }}</small>
+							</div>
+							<p class="mb-1">{{ review.comment }}</p>
+
+							{# We will add Edit/Delete buttons here later #}
+						</div>
+					{% endfor %}
+				</div>
+			{% endif %}
+
+		</div>
+	</div>
 {% endblock %}
