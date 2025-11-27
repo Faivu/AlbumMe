@@ -1,4 +1,47 @@
-{% extends "base.html.twig" %}
+{% extends 'base.html.twig' %}
+
+{% block title %}All Albums{% endblock %}
+
 {% block body %}
-<p>Yay</p>
+    <div class="container mt-4">
+        <h1 class="mb-4 text-left">Check out all the albums!</h1>
+
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for album in albums %}
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        {# If you had images, you'd put one here:
+                        <img src="..." class="card-img-top" alt="..."> 
+                        #}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ album.title }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ album.artist.name }}</h6>
+                            
+                            <p class="card-text">
+                                <small class="text-muted">
+                                    {# Display Genres as badges #}
+                                    {% for genre in album.genres %}
+                                        <span class="badge bg-secondary">{{ genre.name }}</span>
+                                    {% endfor %}
+                                </small>
+                            </p>
+                            
+                            {# Optional: Show truncated tracklist or review count #}
+                        </div>
+                        <div class="card-footer bg-white border-top-0">
+                            <a href="{{ path('show_album', {'id': album.id}) }}" class="btn btn-outline-primary w-100">
+                                View Album
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-warning text-center">
+                        No albums found. <a href="{{ path('new_album') }}">Add the first one!</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
