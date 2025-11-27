@@ -19,16 +19,17 @@
 				{% endfor %}
 			</ul>
 
-			<h2>Reviews</h2>
+			<h2 >Reviews</h2>
 			{# add review button #}
-			<a href="{{ path('new_review', {'id': album.id}) }}" class="btn btn-info text-white me-3">Add review</a>
+			<a href="{{ path('new_review', {'id': album.id}) }}" class="btn btn-info text-white me-3 mb-3">Add review</a>
 
 			{% if album.reviews is empty %}
 				<p>There are no reviews it seems...</p>
 			{% else %}
 				<div class="list-group">
+                {# Iterate over reviews #}
 					{% for review in album.reviews %}
-						<div class="list-group-item">
+						<div class="list-group-item mb-3 border rounded">
 							<div class="d-flex w-100 justify-content-between">
 								<h5 class="mb-1">Rating:
 									{{ review.rating }}
