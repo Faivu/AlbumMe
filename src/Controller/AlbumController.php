@@ -17,7 +17,7 @@ class AlbumController extends AbstractController
     #[Route('/album/new', name: 'new_album', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-    // To check if its a user that is accessing this:
+        // To check if its a user that is accessing this:
         if (!$this->getUser()) {
             $this->addFlash(
                 'warning',
@@ -32,7 +32,7 @@ class AlbumController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()){
 
-            // is this line correct? since I dont have a $user here
+            
             $album->setCreator($this->getUser());
 
             // These two lines are mendatory to save the object to the database, presisting is like getting it read to save then flush saves it, Entity Manager is always needed when updating the database
