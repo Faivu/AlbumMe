@@ -23,6 +23,21 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+
+        $admin = new User();
+        $admin->setEmail('admin@gmail.com');
+        $admin->setUsername('admin');
+        $admin->setPassword($this->hasher->hashPassword($admin, 'admin'));
+        $admin->setRoles(['ROLE_ADMIN']); 
+        $manager->persist($admin);
+
+        $mod = new User();
+        $mod->setEmail('mod@gmail.com');
+        $mod->setUsername('moderator');
+        $mod->setPassword($this->hasher->hashPassword($mod, 'mod'));
+        $mod->setRoles(['ROLE_MODERATOR']);
+        $manager->persist($mod);
+
         // Genres data
         $electronica = new Genre();
         $electronica->setName('Electronica');

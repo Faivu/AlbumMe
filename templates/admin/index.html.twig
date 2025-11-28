@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Admin Dashboard</h1>
+        
+        <table class="table mt-4 table-striped align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Email</th>
+                    <th>Username</th>
+                    <th>Role</th> 
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            {% if 'ROLE_ADMIN' in user.roles %}
+                                <span class="badge bg-danger">Administrator</span>
+                            {% elseif 'ROLE_MODERATOR' in user.roles %}
+                                <span class="badge bg-warning text-dark">Moderator</span>
+                            {% else %}
+                                <span class="badge bg-secondary">User</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if app.user != user and 'ROLE_ADMIN' not in user.roles %}
+                                
+                                {% if 'ROLE_MODERATOR' in user.roles %}
+                                    <a href="{{ path('admin_change_role', {'id': user.id, 'role': 'ROLE_USER'}) }}" 
+                                       class="btn btn-sm btn-outline-secondary">
+                                        Downgrade to User
+                                    </a>
+                                {% else %}
+                                    <a href="{{ path('admin_change_role', {'id': user.id, 'role': 'ROLE_MODERATOR'}) }}" 
+                                       class="btn btn-sm btn-warning">
+                                        Upgrade to Moderator
+                                    </a>
+                                {% endif %}
+
+                            {% elseif 'ROLE_ADMIN' in user.roles %}
+                                <span class="text-muted fst-italic">Superuser</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">No users found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
