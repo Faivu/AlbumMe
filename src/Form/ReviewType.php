@@ -36,13 +36,6 @@ class ReviewType extends AbstractType
 
             ->add('comment')
 
-
-            ->add('save', SubmitType::class, [
-                'label' => 'Add review',
-                'attr' => [
-                    'class' => 'btn btn-info text-white me-3',
-                ],
-            ])
         ;
     }
 

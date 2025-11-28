@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Album;
 use App\Entity\Review;
 use App\Form\ReviewType;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,5 +54,37 @@ final class ReviewController extends AbstractController
             'review_form' => $form
         ]);
 
+    }
+
+    #[Route('/review/{id}/edit', name: 'edit_review', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function edit(
+        Review $review, 
+        Request $request, 
+        EntityManagerInterface $entityManager
+    ): Response {
+        
+
+        if ($this->getUser() !== $review->getReviewer()) {
+            throw $this->createAccessDeniedException('You are not allowed to edit this review.');
+        }
+
+        $form = $this->createForm(ReviewType::class, $review);
+        
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('show_album', [
+                'id' => $review->getAlbum()->getId(),
+            ]);
+        }
+
+        return $this->render('review/edit.html.twig', [
+            'review_form' => $form,
+            'album' => $review->getAlbum(),
+        ]);
     }
 }

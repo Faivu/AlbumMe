@@ -9,7 +9,6 @@ use App\Entity\Album;
 use App\Form\AlbumType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 
 class AlbumController extends AbstractController
