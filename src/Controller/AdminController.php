@@ -36,12 +36,11 @@ class AdminController extends AbstractController
         if ($role === 'ROLE_USER') {
             $user->setRoles([]);
             $this->addFlash('success', 'User downgraded to standard User.');
-        } 
-        else {
-            
+        } else {
+
             if (!in_array($role, ['ROLE_MODERATOR', 'ROLE_ADMIN'])) {
-                 $this->addFlash('danger', 'Invalid role.');
-                 return $this->redirectToRoute('admin_dashboard');
+                $this->addFlash('danger', 'Invalid role.');
+                return $this->redirectToRoute('admin_dashboard');
             }
 
             $currentRoles = $user->getRoles();
@@ -55,7 +54,7 @@ class AdminController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('admin_dashboard');
     }
-#[Route('/user/{id}/delete', name: 'admin_delete_user', methods: ['POST'])]
+    #[Route('/user/{id}/delete', name: 'admin_delete_user', methods: ['POST'])]
     public function deleteUser(User $user, HttpFoundationRequest $request, EntityManagerInterface $entityManager): Response
     {
 
@@ -70,7 +69,7 @@ class AdminController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
-            
+
             $entityManager->remove($user);
             $entityManager->flush();
 
@@ -80,4 +79,3 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_dashboard');
     }
 }
-

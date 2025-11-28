@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Controller;
 
@@ -9,12 +9,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomepageController extends AbstractController
 {
-    // Include the user ID or similar in the route, like: '/{userID}/main'
-    #[Route('/', name:'app_homepage')]
+    #[Route('/', name: 'app_homepage')]
     public function index(AlbumRepository $albumRepository): Response
     {
         $albums = $albumRepository->findAll();
-        
+
         return $this->render('homepage.html.twig', [
             'albums' => $albums,
         ]);
