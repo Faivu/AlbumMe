@@ -20,7 +20,6 @@
 			</ul>
 
 			<h2 >Reviews</h2>
-			{# add review button #}
 			<a href="{{ path('new_review', {'id': album.id}) }}" class="btn btn-info text-white me-3 mb-3">Add review</a>
             
 
@@ -40,11 +39,11 @@
 							</div>
 							<p class="mb-1">{{ review.comment }}</p>
 
-							{# We will add Edit/Delete buttons here later #}
+							
                             {% if app.user and app.user == review.reviewer %}
         <div class="mt-2">
             <a href="{{ path('edit_review', {'id': review.id}) }}" class="btn btn-sm btn-outline-secondary">Edit</a>
-            {# You can add the Delete button here later #}
+            
         </div>
     {% endif %}
 						</div>

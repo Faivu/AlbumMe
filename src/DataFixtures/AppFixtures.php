@@ -41,15 +41,15 @@ class AppFixtures extends Fixture
         $indiePop->setName('Indie pop');
         $manager->persist($indiePop);
         
-        $rock = new Genre(); // Needed for later usage
+        $rock = new Genre(); 
         $rock->setName('Rock');
         $manager->persist($rock);
         
-        $jazz = new Genre(); // Needed for later usage
+        $jazz = new Genre(); 
         $jazz->setName('Jazz');
         $manager->persist($jazz);
 
-        // Array of genres for random assignment later
+        
         $allGenres = [$electronica, $folk, $pop, $popRock, $indiePop, $rock, $jazz];
 
         // Artists data
@@ -88,7 +88,7 @@ class AppFixtures extends Fixture
 
         // Three users
         $faker = Factory::create();
-        $users = [$user]; // Include the main test user
+        $users = [$user]; 
         for ($i = 1; $i <= 3; $i++) {
             $newUser = new User();
             $newUser->setEmail("test$i@example.com");
@@ -98,7 +98,6 @@ class AppFixtures extends Fixture
             $users[] = $newUser;
         }
 
-        // Original Album 1
         $album1 = new Album();
         $album1->setTitle('The Greatest Hits');
         $album1->setArtist($testBand);
@@ -107,7 +106,6 @@ class AppFixtures extends Fixture
         $album1->addGenre($rock);
         $manager->persist($album1);
         
-        // Generate reviews for Album 1
         for ($i = 0; $i < 60; $i++) {
             $review = new Review();
             $review->setRating($faker->numberBetween(1, 5));
@@ -117,9 +115,6 @@ class AppFixtures extends Fixture
             $manager->persist($review);
         }
 
-        // --- 6 New Albums ---
-
-        // Album 2
         $album2 = new Album();
         $album2->setTitle('Night Visions');
         $album2->setArtist($imagineDragons);
@@ -129,7 +124,7 @@ class AppFixtures extends Fixture
         $album2->addGenre($indiePop);
         $manager->persist($album2);
         
-        for ($i = 0; $i < 15; $i++) { // Fewer reviews for variety
+        for ($i = 0; $i < 15; $i++) { 
             $review = new Review();
             $review->setRating($faker->numberBetween(3, 5));
             $review->setComment($faker->paragraph());
@@ -138,7 +133,6 @@ class AppFixtures extends Fixture
             $manager->persist($review);
         }
 
-        // Album 3
         $album3 = new Album();
         $album3->setTitle('1000 Forms of Fear');
         $album3->setArtist($sia);
@@ -157,7 +151,6 @@ class AppFixtures extends Fixture
             $manager->persist($review);
         }
 
-        // Album 4
         $album4 = new Album();
         $album4->setTitle('Random Access Memories');
         $album4->setArtist($daftPunk);
@@ -176,14 +169,14 @@ class AppFixtures extends Fixture
             $manager->persist($review);
         }
 
-        // Album 5
+
         $album5 = new Album();
         $album5->setTitle('25');
         $album5->setArtist($adele);
         $album5->setCreator($users[3] ?? $users[0]);
         $album5->setTrackList(['Hello', 'Send My Love', 'I Miss You']);
         $album5->addGenre($pop);
-        $album5->addGenre($folk); // Close enough for soul
+        $album5->addGenre($folk);
         $manager->persist($album5);
         
         for ($i = 0; $i < 45; $i++) {
@@ -195,7 +188,6 @@ class AppFixtures extends Fixture
             $manager->persist($review);
         }
 
-        // Album 6
         $album6 = new Album();
         $album6->setTitle('Parachutes');
         $album6->setArtist($coldplay);
@@ -213,7 +205,6 @@ class AppFixtures extends Fixture
             $manager->persist($review);
         }
 
-        // Album 7 (A newer one with few reviews)
         $album7 = new Album();
         $album7->setTitle('Mercury – Act 1');
         $album7->setArtist($imagineDragons);
