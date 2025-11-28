@@ -5,7 +5,16 @@
 
 {% block body %}
 	<div class="container mt-4">
-		<h1 class="mb-4 text-left">Check out all the albums!</h1>
+        
+        <h1 class="mb-4 text-left">
+            Check out all the albums
+            {% if is_granted('ROLE_USER') %}
+                <small class="mb-4 text-left">
+                    , Or <a href="{{ path('new_album') }}" class="mb-4 text-left">create</a>
+                     one yourself!
+                </small>
+            {% endif %}
+        </h1>
 
 		<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
 			{% for album in albums %}
@@ -41,7 +50,6 @@
 									</span>
 								</small>
 							</p>
-							{# Optional: Show truncated tracklist or review count #}
 						</div>
 
 					</div>
