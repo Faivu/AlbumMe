@@ -95,7 +95,7 @@ final class ReviewController extends AbstractController
     ): Response {
         
         
-        if ($this->getUser() !== $review->getReviewer()) {
+        if ($this->getUser() !== $review->getReviewer()&& !$this->isGranted('ROLE_MODERATOR')) {
             throw $this->createAccessDeniedException('You are not allowed to delete this review.');
         }
 
