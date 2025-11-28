@@ -1,16 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Review{% endblock %}
+{% block title %}Edit Review
+{% endblock %}
 
 {% block body %}
-    <h1>Edit Your Review for {{ album.title }}</h1>
+	<div class="row justify-content-center">
+		<div class="col-md-6 col-lg-4">
+			<h1>Edit Your Review for
+				{{ album.title }}</h1>
 
-    {{ form_start(review_form) }}
-        {{ form_row(review_form.comment) }}
-        {{ form_row(review_form.rating) }}
+			{{ form_start(review_form) }}
+			{{ form_row(review_form.comment) }}
+			{{ form_row(review_form.rating) }}
 
-        <button type="submit" class="btn btn-warning text-white me-3">Update review</button>
-        <a href="{{ path('show_album', {'id': album.id}) }}" class="btn btn-link">Cancel</a>
+			<button type="submit" class="btn btn-warning text-white me-3">Update review</button>
+			<a href="{{ path('show_album', {'id': album.id}) }}" class="btn btn-link">Cancel</a>
 
-    {{ form_end(review_form) }}
+			{{ form_end(review_form) }}
+		</div>
+	</div>
 {% endblock %}
