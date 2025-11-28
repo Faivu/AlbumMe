@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request as HttpFoundationRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
@@ -54,5 +55,29 @@ class AdminController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('admin_dashboard');
     }
+#[Route('/user/{id}/delete', name: 'admin_delete_user', methods: ['POST'])]
+    public function deleteUser(User $user, HttpFoundationRequest $request, EntityManagerInterface $entityManager): Response
+    {
 
+        if ($user === $this->getUser()) {
+            $this->addFlash('danger', 'You cannot delete your own account.');
+            return $this->redirectToRoute('admin_dashboard');
+        }
+
+        if (in_array('ROLE_ADMIN', $user->getRoles())) {
+            $this->addFlash('danger', 'You cannot delete another Administrator.');
+            return $this->redirectToRoute('admin_dashboard');
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $user->getId(), $request->request->get('_token'))) {
+            
+            $entityManager->remove($user);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'User deleted successfully.');
+        }
+
+        return $this->redirectToRoute('admin_dashboard');
+    }
 }
+
