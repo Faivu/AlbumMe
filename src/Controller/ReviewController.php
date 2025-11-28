@@ -34,8 +34,7 @@ final class ReviewController extends AbstractController
         $review = new Review();
         $form = $this->createForm(ReviewType::class, $review);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $review->setAlbum($album);
             $review->setReviewer($this->getUser());
             //$review->setComment()
@@ -47,30 +46,29 @@ final class ReviewController extends AbstractController
                 'id' => $album->getId()
             ]);
         }
-        
+
         // To show foro first time or when submittion fails
         return $this->render('review/new.html.twig', [
             'album' => $album,
             'review_form' => $form
         ]);
-
     }
 
     #[Route('/review/{id}/edit', name: 'edit_review', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function edit(
-        Review $review, 
-        Request $request, 
+        Review $review,
+        Request $request,
         EntityManagerInterface $entityManager
     ): Response {
-        
+
 
         if ($this->getUser() !== $review->getReviewer()) {
             throw $this->createAccessDeniedException('You are not allowed to edit this review.');
         }
 
         $form = $this->createForm(ReviewType::class, $review);
-        
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -85,6 +83,33 @@ final class ReviewController extends AbstractController
         return $this->render('review/edit.html.twig', [
             'review_form' => $form,
             'album' => $review->getAlbum(),
+        ]);
+    }
+
+    #[Route('/review/{id}/delete', name: 'delete_review', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function delete(
+        Review $review, 
+        Request $request, 
+        EntityManagerInterface $entityManager
+    ): Response {
+        
+        
+        if ($this->getUser() !== $review->getReviewer()) {
+            throw $this->createAccessDeniedException('You are not allowed to delete this review.');
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $review->getId(), $request->request->get('_token'))) {
+            
+            
+            $entityManager->remove($review);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Review deleted successfully.');
+        }
+
+        return $this->redirectToRoute('show_album', [
+            'id' => $review->getAlbum()->getId(),
         ]);
     }
 }
