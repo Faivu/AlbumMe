@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Album;
 use App\Entity\Review;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,28 +17,28 @@ class ReviewRepository extends ServiceEntityRepository
         parent::__construct($registry, Review::class);
     }
 
-//    /**
-//     * @return Review[] Returns an array of Review objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('r.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    /**
+     * @return Review[] Returns a slice of reviews for a given album
+     */
+    public function findPaginatedByAlbum(Album $album, int $offset, int $limit): array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.album = :album')
+            ->setParameter('album', $album)
+            ->orderBy('r.id', 'DESC')
+            ->setFirstResult($offset)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?Review
-//    {
-//        return $this->createQueryBuilder('r')
-//            ->andWhere('r.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function countByAlbum(Album $album): int
+    {
+        return $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->andWhere('r.album = :album')
+            ->setParameter('album', $album)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

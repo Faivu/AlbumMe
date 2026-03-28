@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ReviewRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,6 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AlbumController extends AbstractController
 {
+    private const INITIAL_LIMIT = 20;
+    private const LOAD_MORE_LIMIT = 10;
+
     #[Route('/album/new', name: 'new_album', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -54,10 +58,31 @@ class AlbumController extends AbstractController
         requirements: ['id' => '\d+'],
         methods: ['GET']
     )]
-    public function show(Album $album): Response
+    public function show(Album $album, Request $request, ReviewRepository $reviewRepository): Response
     {
+        $offset = $request->query->getInt('reviewOffset', 0);
+        $isPartial = $request->query->getBoolean('reviewPartial', false);
+
+        $limit = $offset === 0 ? self::INITIAL_LIMIT : self::LOAD_MORE_LIMIT;
+        $reviews = $reviewRepository->findPaginatedByAlbum($album, $offset, $limit);
+        $hasMore = ($offset + $limit) < $reviewRepository->countByAlbum($album);
+        $nextOffset = $offset + $limit;
+
+        if ($isPartial) {
+            $response = $this->render('partials/_review_items.html.twig', [
+                'reviews' => $reviews,
+                'album' => $album,
+            ]);
+            $response->headers->set('X-Has-More', $hasMore ? '1' : '0');
+            $response->headers->set('X-Next-Offset', $nextOffset);
+            return $response;
+        }
+
         return $this->render('/album/show.html.twig', [
-            'album'=>$album
+            'album' => $album,
+            'reviews' => $reviews,
+            'hasMore' => $hasMore,
+            'nextOffset' => $nextOffset,
         ]);
     }
 }
