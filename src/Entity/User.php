@@ -11,6 +11,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -23,16 +25,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: false)]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?string $username = null;
 
     // I manually made email, password, and roles not nullable in the databasewise to ensure there are not empty
     #[ORM\Column(length: 180, nullable: false)]
-    #[Expose()]
     private ?string $email = null;
 
     /**
@@ -48,14 +51,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
      #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'reviewer', orphanRemoval: true)]
-     #[Expose()]
+     #[Expose(), MaxDepth(1)]
     private Collection $reviews;
 
      /**
       * @var Collection<int, Album>
       */
      #[ORM\OneToMany(targetEntity: Album::class, mappedBy: 'creator')]
-     #[Expose()]
      private Collection $createdAlbums;
 
     public function __construct()

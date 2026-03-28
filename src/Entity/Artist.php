@@ -6,22 +6,31 @@ use App\Repository\ArtistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ArtistRepository::class)]
+#[ExclusionPolicy('all')]
 class Artist
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?string $name = null;
 
     /**
      * @var Collection<int, Genre>
      */
     #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'artists')]
+    // Serialization groups are not used so I didn't expose all the properties
     private Collection $genres;
 
     /**

@@ -6,8 +6,12 @@ use App\Repository\GenreRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GenreRepository::class)]
+#[ExclusionPolicy('all')]
 class Genre
 {
     #[ORM\Id]
@@ -16,6 +20,8 @@ class Genre
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?string $name = null;
 
     /**

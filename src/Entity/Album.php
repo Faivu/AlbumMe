@@ -9,6 +9,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\MaxDepth;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AlbumRepository::class)]
@@ -19,39 +21,44 @@ class Album
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: false, unique:true)]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'albums')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?Artist $artist = null;
 
     /**
      * @var Collection<int, Genre>
      */
     #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'albums')]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private Collection $genres;
 
     #[ORM\Column(type: Types::JSON)]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private array $trackList = [];
 
     /**
      * @var Collection<int, Review>
      */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'album', orphanRemoval: true)]
-    #[Expose()]
     private Collection $reviews;
 
     #[ORM\ManyToOne(inversedBy: 'createdAlbums')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['album_list', 'album_detail'])]
     private ?User $creator = null;
 
     public function __construct()
