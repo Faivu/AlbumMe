@@ -7,41 +7,51 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: AlbumRepository::class)]
 #[UniqueEntity(fields: ['title'], message: 'An album with this title already exists.')]
+#[ExclusionPolicy('all')]
 class Album
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Expose()]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: false, unique:true)]
+    #[Expose()]
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'albums')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Expose()]
     private ?Artist $artist = null;
 
     /**
      * @var Collection<int, Genre>
      */
     #[ORM\ManyToMany(targetEntity: Genre::class, inversedBy: 'albums')]
+    #[Expose()]
     private Collection $genres;
 
     #[ORM\Column(type: Types::JSON)]
+    #[Expose()]
     private array $trackList = [];
 
     /**
      * @var Collection<int, Review>
      */
     #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'album', orphanRemoval: true)]
+    #[Expose()]
     private Collection $reviews;
 
     #[ORM\ManyToOne(inversedBy: 'createdAlbums')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Expose()]
     private ?User $creator = null;
 
     public function __construct()
