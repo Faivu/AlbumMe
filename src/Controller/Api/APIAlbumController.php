@@ -100,7 +100,7 @@ final class APIAlbumController extends AbstractController
     }
 
     #[REST\Put('api/v1/albums/{album_id}', name: 'album_edit')]
-    public function editAlbum($album_id, EntityManagerInterface $em, AlbumRepository $repo,SerializerInterface $serializer, Request $request): Response
+    public function editAlbum($album_id, EntityManagerInterface $em, AlbumRepository $repo, SerializerInterface $serializer, Request $request): Response
     {
         if (empty($request->getContent())) {
             return new Response(json_encode(['error' => 'Empty request']), 400, ['Content-Type' => 'application/json']);
@@ -128,5 +128,20 @@ final class APIAlbumController extends AbstractController
         $json = $serializer->serialize($album, 'json', $context);
 
         return new Response($json, 200, ['Content-Type' => 'application/json']);
+    }
+
+    #[REST\Delete('api/v1/albums/{album_id}', name: 'album_delete')]
+    public function deleteAlbum($album_id, EntityManagerInterface $em, AlbumRepository $repo, SerializerInterface $serializer): Response
+    {
+        $album = $repo->find($album_id);
+
+        if (!$album) {
+            return new Response(json_encode(['error' => 'Album not found']), 404, ['Content-Type' => 'application/json']);
+        }
+
+        $em->remove($album);
+        $em->flush();
+
+        return new Response(null, 204, ['Content-Type' => 'application/json']);
     }
 }
