@@ -98,4 +98,35 @@ final class APIAlbumController extends AbstractController
 
         return new Response($json, 201, ['Content-Type' => 'application/json']);
     }
+
+    #[REST\Put('api/v1/albums/{album_id}', name: 'album_edit')]
+    public function editAlbum($album_id, EntityManagerInterface $em, AlbumRepository $repo,SerializerInterface $serializer, Request $request): Response
+    {
+        if (empty($request->getContent())) {
+            return new Response(json_encode(['error' => 'Empty request']), 400, ['Content-Type' => 'application/json']);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $album = $repo->find($album_id);
+        if (!$album) {
+            return new Response(json_encode(['error' => 'Album not found']), 404, ['Content-Type' => 'application/json']);
+        }
+
+        $form = $this->createForm(AlbumAPIType::class, $album);
+        $form->submit($data);
+        if (!$form->isValid()) {
+            return new Response(json_encode(['error' => 'Invalid request data']), 400, ['Content-Type' => 'application/json']);
+        }
+
+        // I think I need to check if it is the same user here. That's created the album.
+
+        $em->persist($album);
+        $em->flush();
+
+        $context = SerializationContext::create()->setGroups(['album_detail']);
+        $json = $serializer->serialize($album, 'json', $context);
+
+        return new Response($json, 200, ['Content-Type' => 'application/json']);
+    }
 }
