@@ -13,7 +13,7 @@ use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-final class APIAlbumController extends AbstractController
+final class AlbumController extends AbstractController
 {
     // Class constants for lazy loading
     private const OFFSET = 0;
