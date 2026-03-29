@@ -22,7 +22,7 @@ use Hateoas\Configuration\Annotation as Hateoas;
     href: new Hateoas\Route(
         'album_get',
         parameters: ['album_id' => 'expr(object.getId())']),
-        exclusion: new Hateoas\Exclusion(groups: ['album_list'])
+        exclusion: new Hateoas\Exclusion(groups: ['album_list', 'album_detail'])
         // Meaning exclude the rule of excluding the groups if in context of serialize(), what a poorly named class...
 )]
 class Album

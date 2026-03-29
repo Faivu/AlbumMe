@@ -2,7 +2,10 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Album;
+use App\Form\AlbumAPIType;
 use App\Repository\AlbumRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations as REST;
@@ -16,7 +19,7 @@ final class APIAlbumController extends AbstractController
     private const OFFSET = 0;
     private const LOAD_MORE_LIMIT = 20;
 
-    #[REST\Get('api/v1/albums', name:'album_all')]
+    #[REST\Get('api/v1/albums', name: 'album_all')]
     public function getAllAlbums(Request $request, AlbumRepository $repo, SerializerInterface $serializer): Response
     {
         // Default to default values if there are no custom ones
@@ -30,12 +33,9 @@ final class APIAlbumController extends AbstractController
         $end = $offset + count($albums) - 1;
 
         $context = SerializationContext::create()->setGroups(['album_list']);
-        
 
         //hateos
         $data = $serializer->serialize($albums, 'json', $context);
-
-        //$data = $serializer->serialize($albums, 'json', $context);
 
         $response = new Response($data, 200, ['Content-Type' => 'application/json']);
         // Sending that number in the header since its a RESTFull best practice 
@@ -44,7 +44,7 @@ final class APIAlbumController extends AbstractController
         return $response;
     }
 
-    #[REST\Get('api/v1/albums/{album_id}', name:'album_get')]
+    #[REST\Get('api/v1/albums/{album_id}', name: 'album_get')]
     public function getAlbum(AlbumRepository $repo, SerializerInterface $serializer, $album_id): Response
     {
 
@@ -58,7 +58,44 @@ final class APIAlbumController extends AbstractController
         $json = $serializer->serialize($album, 'json', $context);
 
         $response = new Response($json, 200, ['Content-Type' => 'application/json']);
-        
+
         return $response;
+    }
+
+    #[REST\Post('api/v1/albums', name: 'album_new')]
+    public function createAlbum(Request $request, EntityManagerInterface $em, SerializerInterface $serializer): Response
+    {
+        // Check if the request is empty
+        if (empty($request->getContent())) {
+            return new Response(json_encode(['error' => 'Empty request']), 400, ['Content-Type' => 'application/json']);
+        }
+
+        // Check the request format
+        if (!($request->getContentTypeFormat() === 'json')) {
+            return new Response(json_encode(['error' => 'Request is not in JSON']), 400, ['Content-Type' => 'application/json']);
+        }
+
+        $data = json_decode($request->getContent(), true);
+
+        $album = new Album();
+        $form = $this->createForm(AlbumAPIType::class, $album);
+        $form->submit($data);
+
+        // Checking if the content of the request is correct
+        if (!$form->isValid()) {
+            return new Response(json_encode(['error' => 'Invalid request data']), 400, ['Content-Type' => 'application/json']);
+        }
+
+        // need to implement JWT authentication here
+        $album->setCreator($this->getUser());
+
+        $em->persist($album);
+        $em->flush();
+
+        // This is to return the created album in the response
+        $context = SerializationContext::create()->setGroups(['album_detail']);
+        $json = $serializer->serialize($album, 'json', $context);
+
+        return new Response($json, 201, ['Content-Type' => 'application/json']);
     }
 }
