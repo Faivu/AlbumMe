@@ -7,7 +7,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
-use JMS\Serializer\Annotation\MaxDepth;
+use JMS\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ReviewRepository::class)]
 #[ExclusionPolicy('all')]
@@ -16,25 +16,28 @@ class Review
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['review_list', 'review_detail'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['review_list', 'review_detail'])]
     private ?string $comment = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    #[Expose()]
+    #[Expose]
+    #[Groups(['review_list', 'review_detail'])]
     private ?int $rating = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Expose(), MaxDepth(1)]
+    #[Expose]
+    #[Groups(['review_list', 'review_detail'])]
     private ?User $reviewer = null;
 
     #[ORM\ManyToOne(inversedBy: 'reviews')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Expose(), MaxDepth(1)]
     private ?Album $album = null;
 
     public function getId(): ?int

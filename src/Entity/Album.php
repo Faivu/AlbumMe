@@ -10,7 +10,6 @@ use Doctrine\DBAL\Types\Types;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\MaxDepth;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Hateoas\Configuration\Annotation as Hateoas;
 
@@ -23,7 +22,6 @@ use Hateoas\Configuration\Annotation as Hateoas;
         'album_get',
         parameters: ['album_id' => 'expr(object.getId())']),
         exclusion: new Hateoas\Exclusion(groups: ['album_list', 'album_detail'])
-        // Meaning exclude the rule of excluding the groups if in context of serialize(), what a poorly named class...
 )]
 class Album
 {

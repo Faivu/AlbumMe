@@ -12,7 +12,6 @@ use Doctrine\Common\Collections\Collection;
 use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 use JMS\Serializer\Annotation\Groups;
-use JMS\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -26,12 +25,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Expose]
-    #[Groups(['album_list', 'album_detail'])]
+    #[Groups(['album_list', 'album_detail', 'review_list', 'review_detail'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: false)]
     #[Expose]
-    #[Groups(['album_list', 'album_detail'])]
+    #[Groups(['album_list', 'album_detail', 'review_list', 'review_detail'])]
     private ?string $username = null;
 
     // I manually made email, password, and roles not nullable in the databasewise to ensure there are not empty
@@ -51,7 +50,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
      #[ORM\OneToMany(targetEntity: Review::class, mappedBy: 'reviewer', orphanRemoval: true)]
-     #[Expose(), MaxDepth(1)]
     private Collection $reviews;
 
      /**
@@ -202,7 +200,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCreatedAlbum(Album $createdAlbum): static
     {
         if ($this->createdAlbums->removeElement($createdAlbum)) {
-            // set the owning side to null (unless already changed)
+            // set the owning side to null unless was already changed
             if ($createdAlbum->getCreator() === $this) {
                 $createdAlbum->setCreator(null);
             }
