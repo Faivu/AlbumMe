@@ -33,8 +33,6 @@ final class AlbumController extends AbstractController
         $end = $offset + count($albums) - 1;
 
         $context = SerializationContext::create()->setGroups(['album_list']);
-
-        //hateos
         $data = $serializer->serialize($albums, 'json', $context);
 
         $response = new Response($data, 200, ['Content-Type' => 'application/json']);
