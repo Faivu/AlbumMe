@@ -23,6 +23,13 @@ use Hateoas\Configuration\Annotation as Hateoas;
         parameters: ['album_id' => 'expr(object.getId())']),
         exclusion: new Hateoas\Exclusion(groups: ['album_list', 'album_detail'])
 )]
+#[Hateoas\Relation(
+    'reviews',
+    href: new Hateoas\Route(
+        'reviews_all',
+        parameters: ['album_id' => 'expr(object.getId())']),
+        exclusion: new Hateoas\Exclusion(groups: ['album_detail'])
+)]
 class Album
 {
     #[ORM\Id]
